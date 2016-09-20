@@ -26,4 +26,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Get the orders for the current user
+     */ 
+    public function orders() {
+    	return $this->hasMany(Order::class);
+    }
 }

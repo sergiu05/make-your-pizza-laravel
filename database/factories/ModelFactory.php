@@ -14,10 +14,17 @@
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
+    $user_role_id = DB::table('roles')
+					->select('id')
+					->where('name', 'user')
+					->first()
+					->id;
+
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+        'role_id' => $user_role_id
     ];
 });
