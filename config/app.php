@@ -177,6 +177,8 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\MyAppServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
     ],
 

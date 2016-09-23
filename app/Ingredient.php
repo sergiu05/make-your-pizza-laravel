@@ -3,15 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Services\ProductInterface;
 
-class Ingredient extends Model
+class Ingredient extends Model implements ProductInterface
 {
     /**
      * The attributes that are mass assignable
      *
      * @var array
      */
-    protected $fillable = ['name', 'price', 'category_id'];
+    protected $fillable = ['name', 'price', 'category_id', 'image_name'];
 
     /**
      * Get the price in decimals
@@ -39,4 +40,21 @@ class Ingredient extends Model
     public function category() {
     	return $this->belongsTo(Category::class);
     }
+
+    public function getUrl() {
+    	return '/uploads/' . $this->attributes['image_name'];
+    }
+
+    public function getId() {
+    	return $this->id;
+    }
+
+    public function getPrice() {
+    	return $this->price;
+    }
+
+    public function getName() {
+    	return $this->name;
+    }
+
 }

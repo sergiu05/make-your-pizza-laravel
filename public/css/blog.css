@@ -1,0 +1,21 @@
+.homepage .ingredients {
+	list-style-type: none;
+	padding: 0px;
+}
+
+.homepage .ingredients li {
+	display: inline-block;
+}
+
+.homepage .ingredients li img {
+	width: 100%;		
+}
+
+#droppable {
+	min-height: 200px;
+	border: 1px solid #cccccc;
+}
+
+.homepage .ingredients li.marked img {	
+	height: auto;
+}
