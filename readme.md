@@ -1,4 +1,4 @@
-# Make Your Own Pizza - Small Laravel App for Learning
+# Make Your Own Pizza - Learning Laravel by Building a Simple Application from Scratch
 
 ## Official Documentation
 
