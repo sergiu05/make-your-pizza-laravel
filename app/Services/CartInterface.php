@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Repositories\ProductInterface;
 
 interface CartInterface {
 

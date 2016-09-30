@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Services\ProductInterface;
+use App\Repositories\ProductInterface;
 
 class Ingredient extends Model implements ProductInterface
 {
@@ -13,6 +13,13 @@ class Ingredient extends Model implements ProductInterface
      * @var array
      */
     protected $fillable = ['name', 'price', 'category_id', 'image_name'];
+
+    /**
+     * The attributes that should be hidden for arrays
+     *
+     * @var array
+     */
+    protected $hidden = ['category_id', 'created_at', 'updated_at', 'image_name'];
 
     /**
      * Get the price in decimals
@@ -55,6 +62,13 @@ class Ingredient extends Model implements ProductInterface
 
     public function getName() {
     	return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategoryName() {
+        return $this->category->name;
     }
 
 }

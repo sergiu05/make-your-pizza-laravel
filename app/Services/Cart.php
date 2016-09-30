@@ -3,16 +3,25 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
+use App\Repositories\ProductInterface;
 
 class Cart implements CartInterface {
 
 	private $lineCollection;
 
-	public function __construct() {
+	private $validators;
+
+	public function __construct(array $validators = array()) {
 		$this->lineCollection = new Collection();
+		$this->validators = $validators;
 	}
 
 	public function addItem(ProductInterface $product, $quantity = 1) {
+		
+		# Learning Source: "Laravel 4 - From Apprentice to Artisan", p.48
+		foreach($this->validators as $validator) {
+			$validator->validate($this, $product);
+		}
 
 		$filtered = $this->lineCollection->filter(function($item, $key) use ($product) {
 			return $item->product->getId() == $product->getId();

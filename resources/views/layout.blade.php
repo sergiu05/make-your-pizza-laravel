@@ -33,7 +33,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-<script src="/assets/js/blog.js"></script>
+<!--<script src="/assets/js/blog.js"></script>-->
 @yield('scripts')
 
 </body>

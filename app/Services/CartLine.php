@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Repositories\ProductInterface;
+
 class CartLine implements \JsonSerializable {
 
 	protected $product;

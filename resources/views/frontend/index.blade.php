@@ -5,10 +5,19 @@
     <div class="row">
     	<div class="col-md-8 col-md-offset-2">
     	<div id="droppable" class="">
+	    	@foreach ($cartItems as $cartLine)
+	    		<img src="{{ $cartLine->product->getUrl() }}" alt="Image of {{ $cartLine->product->name }}" height="75" data-id="{{ $cartLine->product->getId() }}">
+	    	@endforeach
     	</div>
     	<ul class="ingredients">
-    	@foreach($ingredients as $ingredient)<li class="ingredient-wrapper" data-id="{{ $ingredient->id }}"><img src="{{ $ingredient->getUrl() }}" alt="Image of {{ $ingredient->name }}" height="100"></li>@endforeach      
+	    	@foreach($ingredients as $ingredient)
+	    		<li class="ingredient-wrapper" data-id="{{ $ingredient->id }}">
+	    			<img src="{{ $ingredient->getUrl() }}" alt="Image of {{ $ingredient->name }}" height="100">
+	    		</li>
+	    	@endforeach      
     	</ul>
+    	<div id="ingredients-alert" class="alert alert-danger">
+    	</div>
     	</div>
     </div>
 </div>
@@ -84,7 +93,10 @@ resizeContainerImages();
 
 $(window).smartresize(resizeContainerImages);
 
-$(".ingredients")
+var $droppable = $('#droppable');
+var $ingredients = $(".ingredients");
+
+$ingredients
 	.find('li')
 	.draggable({
 		snap: "#droppable",
@@ -93,17 +105,79 @@ $(".ingredients")
 		scope: 1
 	});
 
-$("#droppable").droppable({	
+
+
+$droppable.find('img').each(function() {
+	var $this = $(this);
+
+	$ingredients.find('li').each(function() {
+		var $thisLi = $(this);
+
+		if ($this.data('id') == $thisLi.data('id')) {
+			$thisLi.css("visibility", "hidden");
+		}
+	});
+});
+
+$droppable.on('click', 'img', function(event) {
+    var $this = $(this);
+    var url = '{{ route('cart.removeItem', ":productId") }}';
+
+    url = url.replace(":productId", $this.data('id'));
+
+    $.ajax({
+        url: url,
+        dataType: "json"
+    })
+    .done(function(data) {
+        $this.remove();
+        $ingredients.find('li[data-id="' + $this.data('id') + '"]').css('visibility', 'visible').animate({
+                    top: 0,
+                    left: 0
+                }, 500);
+
+    })
+
+
+
+});
+
+$droppable.droppable({	
 	tolerance: "touch",
 	accept: ".ingredient-wrapper",
 	drop: function(event, ui) {		
 		var $img = $("<img>", {
-			src: ui.draggable.find('img').attr('src'),
-			height: 75,
-			width: "auto"
+			"src": ui.draggable.find('img').attr('src'),
+			"height": 75,
+			"width": "auto",
+			"data-id": ui.draggable.data('id')
 		});
-		$img.appendTo($('#droppable'));
-		ui.draggable.css("visibility", "hidden");
+
+		var url = '{{ route("cart.addItem", ":productId") }}';
+
+		url = url.replace(":productId", ui.draggable.data('id'));
+
+		$.ajax({
+			url: url,
+			dataType: "json"
+		})
+		.done(function(data) {
+			$img.appendTo($('#droppable'));
+			ui.draggable.css("visibility", "hidden");
+            $('#ingredients-alert').html('');
+		})
+		.fail(function(jqXHR, textStatus, errorThrown) {
+    		//ui.draggable.css({top: 0, left: 0});
+    		ui.draggable.animate({
+    			top: 0,
+    			left: 0
+    		}, 500);
+
+    		$('#ingredients-alert').text(jqXHR.responseJSON.message);
+    	})
+    	.always(function() {
+    		
+    	});	
 	},
 	scope: 1
 });

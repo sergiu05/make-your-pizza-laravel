@@ -10,7 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Ingredient;
 
 /*
-* "Controller tests should verfiy responses, ensure that the correnct database access methods are triggered,
+* "Controller tests should verfiy responses, ensure that the correct database access methods are triggered,
 *  and assert that the appropriate instance variables are sent to the view." ("Laravel Testing Decoded", p. 129)
 *
 * "The process of testing a controller (or any class, really) can be divided into three pieces

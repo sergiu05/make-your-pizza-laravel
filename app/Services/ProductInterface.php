@@ -4,10 +4,24 @@ namespace App\Services;
 
 interface ProductInterface {
 
-	public function getId();
+    /**
+     * @return int
+     */
+    public function getId();
 
-	public function getPrice();
+    /**
+     * @return float
+     */
+    public function getPrice();
 
-	public function getName();
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * @return string
+     */
+    public function getCategoryName();
 
 }
