@@ -30,10 +30,12 @@ class HomeController extends Controller
     	$ingredients = $this->ingredients->all();
     	
     	$cartItems = $this->getCart()->getLines();
-    	//echo '<pre>'.print_r($selectedIngredients,1).'</pre>';
-    	//echo '<pre>'.print_r($ingredients,1).'</pre>';
-		//dd($selectedIngredients);    	
+
     	return view('frontend.index', compact('ingredients', 'cartItems'));
+    }
+
+    public function store() {
+
     }
 
 }

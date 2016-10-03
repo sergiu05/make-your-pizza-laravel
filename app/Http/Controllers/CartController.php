@@ -33,8 +33,9 @@ class CartController extends Controller {
 	public function index() {
 
 		$items = $this->getCart()->getLines();
-		
-		return view('partials.cart', compact('items'));
+		$total = $this->getCart()->computeTotalValue();
+
+		return view('partials.cart', compact('items', 'total'));
 	}
 
 	/**

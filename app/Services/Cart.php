@@ -6,17 +6,31 @@ use Illuminate\Support\Collection;
 use App\Repositories\ProductInterface;
 
 class Cart implements CartInterface {
-
+    /**
+     * @var Illuminate\Support\Collection
+     */
 	private $lineCollection;
 
+    /**
+     * @var array
+     */
 	private $validators;
 
-	public function __construct(array $validators = array()) {
+    /**
+     * Cart constructor.
+     * @param array $validators
+     */
+    public function __construct(array $validators = array()) {
 		$this->lineCollection = new Collection();
 		$this->validators = $validators;
 	}
 
-	public function addItem(ProductInterface $product, $quantity = 1) {
+    /**
+     * @param ProductInterface $product
+     * @param int $quantity
+     * @return void
+     */
+    public function addItem(ProductInterface $product, $quantity = 1) {
 		
 		# Learning Source: "Laravel 4 - From Apprentice to Artisan", p.48
 		foreach($this->validators as $validator) {
@@ -35,7 +49,11 @@ class Cart implements CartInterface {
 
 	}
 
-	public function removeLine(ProductInterface $product) {
+    /**
+     * @param ProductInterface $product
+     * @return void
+     */
+    public function removeLine(ProductInterface $product) {
 
 		$this->lineCollection = $this->lineCollection->reject(function($item) use ($product) {
 			return $item->product->getId() == $product->getId();
@@ -43,21 +61,40 @@ class Cart implements CartInterface {
 
 	}
 
-	public function computeTotalValue() {
+    /**
+     * @return float
+     */
+    public function computeTotalValue() {
 		return $this->lineCollection->sum(function($item) {
 			return $item->product->getPrice() * $item->quantity;
 		});
 	}
 
-	public function clear() {
+    /**
+     * @return void
+     */
+    public function clear() {
 		$this->lineCollection = new Collection();
 	}
 
-	public function getLines() {
+    /**
+     * @return Illuminate\Support\Collection
+     */
+    public function getLines() {
 		return $this->lineCollection;
 	}
 
-	public function __toString() {
+    /**
+     * @return bool
+     */
+    public function isEmpty() {
+	    return $this->lineCollection->isEmpty();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() {
 		return (string) $this->lineCollection;
 	}
 }

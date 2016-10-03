@@ -3,22 +3,26 @@
 @section('content')
 <div class="container homepage">
     <div class="row">
-    	<div class="col-md-8 col-md-offset-2">
-    	<div id="droppable" class="">
-	    	@foreach ($cartItems as $cartLine)
-	    		<img src="{{ $cartLine->product->getUrl() }}" alt="Image of {{ $cartLine->product->name }}" height="75" data-id="{{ $cartLine->product->getId() }}">
-	    	@endforeach
+    	<div class="col-md-8 col-md-offset-1">
+            <div id="droppable" class="" data-placeholder="Drag ingredients to this container">
+                @foreach ($cartItems as $cartLine)
+                    <img src="{{ $cartLine->product->getUrl() }}" alt="Image of {{ $cartLine->product->name }}" height="75" data-id="{{ $cartLine->product->getId() }}">
+                @endforeach
+            </div>
+            <ul class="ingredients">
+                @foreach($ingredients as $ingredient)
+                    <li class="ingredient-wrapper" data-id="{{ $ingredient->id }}">
+                        <img src="{{ $ingredient->getUrl() }}" alt="Image of {{ $ingredient->name }}" height="100">
+                    </li>
+                @endforeach
+            </ul>
+            <div id="ingredients-alert" class="alert alert-danger">
+            </div>
     	</div>
-    	<ul class="ingredients">
-	    	@foreach($ingredients as $ingredient)
-	    		<li class="ingredient-wrapper" data-id="{{ $ingredient->id }}">
-	    			<img src="{{ $ingredient->getUrl() }}" alt="Image of {{ $ingredient->name }}" height="100">
-	    		</li>
-	    	@endforeach      
-    	</ul>
-    	<div id="ingredients-alert" class="alert alert-danger">
-    	</div>
-    	</div>
+        <div class="col-md-3">
+            <section id="cart-content">
+            </section>
+        </div>
     </div>
 </div>
 @stop
@@ -119,28 +123,56 @@ $droppable.find('img').each(function() {
 	});
 });
 
+
+
+var getAllItems = function() {
+    return $.ajax({
+        url: '{{ route('cart.allItems') }}',
+        dataType: 'html'
+    });
+};
+
+var getAllItemsCallback = function(data) {
+    $('#cart-content').html(data);
+    if ($('#cart-content').find('.panel').data('empty') == 1) {
+        $('#droppable').html('<p>Drag ingredients to this container. After that, click the dragged item to remove it from selected items.</p>');
+    } else {
+        $('#droppable').find('p').remove();
+    }
+};
+
+getAllItems().
+        done(getAllItemsCallback);
+
 $droppable.on('click', 'img', function(event) {
     var $this = $(this);
     var url = '{{ route('cart.removeItem', ":productId") }}';
 
     url = url.replace(":productId", $this.data('id'));
 
-    $.ajax({
-        url: url,
-        dataType: "json"
-    })
-    .done(function(data) {
+    var removeItem = function(url) {
+        return $.ajax({
+            url: url,
+            method: "post",
+            dataType: "json"
+        });
+    };
+
+    $.when(removeItem(url)).done(function(data) {
         $this.remove();
         $ingredients.find('li[data-id="' + $this.data('id') + '"]').css('visibility', 'visible').animate({
-                    top: 0,
-                    left: 0
-                }, 500);
+            top: 0,
+            left: 0
+        }, 500);
 
-    })
+        getAllItems()
+                .done(getAllItemsCallback);
 
-
+    });
 
 });
+
+
 
 $droppable.droppable({	
 	tolerance: "touch",
@@ -157,27 +189,31 @@ $droppable.droppable({
 
 		url = url.replace(":productId", ui.draggable.data('id'));
 
-		$.ajax({
-			url: url,
-			dataType: "json"
-		})
-		.done(function(data) {
-			$img.appendTo($('#droppable'));
-			ui.draggable.css("visibility", "hidden");
+        var addItem = function(url) {
+            return $.ajax({
+                url: url,
+                method: "post",
+                dataType: "json"
+            });
+        };
+
+		$.when(addItem(url)).done(function(data) {
+            $img.appendTo($('#droppable'));
+            ui.draggable.css("visibility", "hidden");
             $('#ingredients-alert').html('');
-		})
+
+            getAllItems()
+                    .done(getAllItemsCallback);
+        })
 		.fail(function(jqXHR, textStatus, errorThrown) {
-    		//ui.draggable.css({top: 0, left: 0});
+
     		ui.draggable.animate({
     			top: 0,
     			left: 0
     		}, 500);
 
     		$('#ingredients-alert').text(jqXHR.responseJSON.message);
-    	})
-    	.always(function() {
-    		
-    	});	
+    	});
 	},
 	scope: 1
 });
