@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Ingredient;
 
-class EloquentIngredientRepository extends AbstractEloquentRepository {
+class EloquentIngredientRepository extends AbstractEloquentRepository implements IngredientRepositoryInterface {
 
 	/**
 	 * Constructor

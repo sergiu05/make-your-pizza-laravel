@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 # Blueprint class for Eloquent repositories 
 # Learning source: http://culttt.com/2014/03/17/eloquent-tricks-better-repositories/ 
 
-abstract class AbstractEloquentRepository implements IngredientRepositoryInterface {
+abstract class AbstractEloquentRepository {
 
 	/**
 	 * @var Model

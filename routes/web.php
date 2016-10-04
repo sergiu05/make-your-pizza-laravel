@@ -21,4 +21,4 @@ Route::get('/cart', 'CartController@index')->name('cart.allItems');
 
 Auth::routes();
 
-Route::post('/place-order', 'HomeController@store')->name('place.order');
+Route::post('/place-order', 'HomeController@store')->name('place.order')->middleware('auth');
